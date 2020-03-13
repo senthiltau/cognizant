@@ -7,13 +7,12 @@ import java.math.BigDecimal;
 
 public class BidWinnerMapper {
 
-    public static BidWinnerDetails mapBidWinnerDetails(final BidInformation bidInformation, final Boolean conflicted, BigDecimal maximumBidOfSecondBidder) {
-        BigDecimal maximumBid = bidInformation.getMaximumBid();
-        BigDecimal winningBidAmount = conflicted ? maximumBid : getIncrementedMaxBid(bidInformation, maximumBidOfSecondBidder).compareTo(maximumBid) > 0
-                ? maximumBid : getIncrementedMaxBid(bidInformation, maximumBidOfSecondBidder);
+    public static BidWinnerDetails mapBidWinnerDetails(final BidInformation bidInformation1, final BidInformation bidInformation2, final String auctionItem) {
+        final BigDecimal maximumBidOfSecondBidder = bidInformation2 == null ? BigDecimal.ZERO : bidInformation2.getMaximumBid();
         return BidWinnerDetails.Builder.builder()
-                .bidder(bidInformation.getBidder())
-                .winningBid(winningBidAmount)
+                .bidder(bidInformation1.getBidder())
+                .winningBid(getIncrementedMaxBid(bidInformation1, maximumBidOfSecondBidder))
+                .auctionItem(auctionItem)
                 .build();
     }
 
@@ -23,20 +22,15 @@ public class BidWinnerMapper {
     }
 
     private static BigDecimal getWinningAmountByAddingAutoIncrement(final BidInformation bidInformation, final BigDecimal maximumBidOfSecondBidder) {
-        Long startIndex = Long.parseLong(bidInformation.getStartingBid().toPlainString());
-        Long maxBid = Long.parseLong(maximumBidOfSecondBidder.toPlainString());
-        long autoIncrementValue = Long.parseLong(bidInformation.getAutoIncrementAmount().toPlainString());
+        final BigDecimal autoIncrementValue = bidInformation.getAutoIncrementAmount();
+        BigDecimal result = bidInformation.getMaximumBid();
 
-        BigDecimal result = BigDecimal.ZERO;
-        Long index = startIndex;
-        while (index < maxBid + autoIncrementValue + 1) {
-            Long addedAmount = index + autoIncrementValue;
-            if (addedAmount.longValue() > maxBid.longValue()) {
-                result = new BigDecimal(addedAmount);
+        for (BigDecimal index = result; index.compareTo(maximumBidOfSecondBidder) > 0; index.subtract(autoIncrementValue)) {
+            result = result.subtract(autoIncrementValue);
+            if (result.compareTo(maximumBidOfSecondBidder) < 0) {
                 break;
             }
-            index += autoIncrementValue;
         }
-        return result;
+        return result.add(autoIncrementValue);
     }
 }

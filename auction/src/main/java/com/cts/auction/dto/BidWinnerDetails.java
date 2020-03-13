@@ -8,9 +8,12 @@ public final class BidWinnerDetails {
 
     private final BigDecimal winningBid;
 
+    private final String auctionItem;
+
     private BidWinnerDetails(final Builder builder) {
         this.bidder = builder.getBidder();
         this.winningBid = builder.getWinningBid();
+        this.auctionItem = builder.getAuctionItem();
     }
 
     public Bidder getBidder() {
@@ -21,26 +24,35 @@ public final class BidWinnerDetails {
         return winningBid;
     }
 
+    public String getAuctionItem() {
+        return auctionItem;
+    }
+
+    public Builder builder() {
+        return new Builder(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BidWinnerDetails that = (BidWinnerDetails) o;
         return bidder.equals(that.bidder) &&
-                winningBid.equals(that.winningBid);
+                winningBid.equals(that.winningBid) &&
+                auctionItem.equals(that.auctionItem);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bidder, winningBid);
+        return Objects.hash(bidder, winningBid, auctionItem);
     }
 
     @Override
     public String toString() {
-        return "BidWinnerDetails{" +
-                "bidder=" + bidder +
-                ", winningBid=" + winningBid +
-                '}';
+        return "Bid Winner Details \n" +
+                "Bidder:" + bidder.getBidderName() + "\n" +
+                "Winning Bid amount:" + winningBid + "\n" +
+                "Auctioned Item:" + auctionItem;
     }
 
     public static class Builder {
@@ -48,9 +60,12 @@ public final class BidWinnerDetails {
 
         private  BigDecimal winningBid;
 
+        private String auctionItem;
+
         public Builder(final BidWinnerDetails bidWinnerDetails) {
             this.bidder = bidWinnerDetails.getBidder();
             this.winningBid = bidWinnerDetails.getWinningBid();
+            this.auctionItem = bidWinnerDetails.getAuctionItem();
         }
 
         public Builder() {
@@ -67,12 +82,21 @@ public final class BidWinnerDetails {
             return this;
         }
 
+        public Builder auctionItem(final String auctionItem) {
+            this.auctionItem = auctionItem;
+            return this;
+        }
+
         public Bidder getBidder() {
             return bidder;
         }
 
         public BigDecimal getWinningBid() {
             return winningBid;
+        }
+
+        public String getAuctionItem() {
+            return auctionItem;
         }
 
         public static Builder builder() {

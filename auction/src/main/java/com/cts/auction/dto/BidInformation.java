@@ -44,6 +44,10 @@ public final class BidInformation {
         return bidderEntryNumber;
     }
 
+    public Builder getBuilder() {
+        return new Builder(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

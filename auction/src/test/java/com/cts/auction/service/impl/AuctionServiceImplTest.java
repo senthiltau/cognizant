@@ -16,8 +16,10 @@ import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -27,7 +29,7 @@ class AuctionServiceImplTest {
     private static final String BIDDER_NAME_DAVE = "DAVE";
     private static final String BIDDER_NAME_ERIC = "ERIC";
 
-    private List<BidInformation> bidInformationList = new LinkedList<>();
+    private Set<BidInformation> bidInformationList = new HashSet<>();
 
     private BidInformation bidderLinda;
     private BidInformation bidderDave;
@@ -78,9 +80,9 @@ class AuctionServiceImplTest {
                 .build();
 
         bidInformationList.addAll(Arrays.asList(bidderLinda, bidderDave, bidderEric));
-        BidWinnerDetails actual = auctionService.determineWinningBid(bidInformationList);
-        assertEquals(new BigDecimal("243"), actual.getWinningBid());
-        assertEquals(bidderDave.getBidder().getBidderName(), actual.getBidder().getBidderName());
+        BidWinnerDetails actual = auctionService.determineWinningBid(bidInformationList, "Record Player");
+        assertEquals(new BigDecimal("239"), actual.getWinningBid());
+        assertEquals(bidderLinda.getBidder().getBidderName(), actual.getBidder().getBidderName());
     }
 
     @Test
@@ -104,8 +106,8 @@ class AuctionServiceImplTest {
                 .build();
 
         bidInformationList.addAll(Arrays.asList(bidderLinda, bidderDave, bidderEric));
-        BidWinnerDetails actual = auctionService.determineWinningBid(bidInformationList);
-        assertEquals(new BigDecimal("72"), actual.getWinningBid());
+        BidWinnerDetails actual = auctionService.determineWinningBid(bidInformationList, "Snow shoes");
+        assertEquals(new BigDecimal("70"), actual.getWinningBid());
         assertEquals(bidderEric.getBidder().getBidderName(), actual.getBidder().getBidderName());
     }
 
@@ -130,19 +132,19 @@ class AuctionServiceImplTest {
                 .build();
 
         bidInformationList.addAll(Arrays.asList(bidderLinda, bidderDave, bidderEric));
-        BidWinnerDetails actual = auctionService.determineWinningBid(bidInformationList);
-        assertEquals(new BigDecimal("70000"), actual.getWinningBid());
-        assertEquals(bidderDave.getBidder().getBidderName(), actual.getBidder().getBidderName());
+        BidWinnerDetails actual = auctionService.determineWinningBid(bidInformationList, "Piano");
+        assertEquals(new BigDecimal("62000"), actual.getWinningBid());
+        assertEquals(bidderLinda.getBidder().getBidderName(), actual.getBidder().getBidderName());
     }
 
     @Test
     public void testInputValidationException() {
-        Assertions.assertThrows(InvalidInputException.class, () -> auctionService.determineWinningBid(null));
+        Assertions.assertThrows(InvalidInputException.class, () -> auctionService.determineWinningBid(null, null));
     }
 
     @Test
     public void testBusinessProcessException() {
         bidInformationList.addAll(Arrays.asList(bidderLinda, bidderDave, bidderEric));
-        Assertions.assertThrows(BusinessProcessException.class, () -> auctionService.determineWinningBid(bidInformationList));
+        Assertions.assertThrows(BusinessProcessException.class, () -> auctionService.determineWinningBid(bidInformationList, null));
     }
 }
