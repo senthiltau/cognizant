@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -35,9 +36,10 @@ public class AuctionServiceImpl implements AuctionService {
                             .map(bid -> bid.getBuilder()
                                     .maximumBid(getMaximumPossibleBid(bid.getStartingBid(), bid.getMaximumBid(), bid.getAutoIncrementAmount()))
                                     .build())
-                            .sorted(Comparator.comparing(BidInformation::getMaximumBid).thenComparing(BidInformation::getBidderEntryNumber).reversed())
+                            .sorted(Comparator.comparing(BidInformation::getMaximumBid).reversed())
                             .limit(BID_LIMIT)
                             .collect(Collectors.toList());
+                    Collections.sort(bidInformation, new BidComparator());
                     bidWinnerDetails = mapBidWinnerDetails(bidInformation.get(0), bidInformation.get(1), auctionItem);
                 } else {
                     bidWinnerDetails = mapBidWinnerDetails(bidInformations.iterator().next(), null, auctionItem);
@@ -59,14 +61,24 @@ public class AuctionServiceImpl implements AuctionService {
 
     private BigDecimal getMaximumPossibleBid(final BigDecimal startingBid, final BigDecimal maximumBid, final BigDecimal autoIncrementAmount) {
         BigDecimal result = startingBid;
-        while (result.compareTo(maximumBid) < 0) {
+        for (BigDecimal index = startingBid; index.compareTo(maximumBid) < 0 || index.compareTo(maximumBid) == 0; index.add(autoIncrementAmount)) {
             result = result.add(autoIncrementAmount);
-            if (result.compareTo(maximumBid) > 0) {
+            if (result.compareTo(maximumBid) == 0 || result.compareTo(maximumBid) > 0) {
                 break;
             }
-            result.add(autoIncrementAmount);
         }
-        return result.subtract(autoIncrementAmount);
+        return result.compareTo(maximumBid) > 0 ? maximumBid : result;
     }
 
+    private class BidComparator implements Comparator<BidInformation> {
+
+        @Override
+        public int compare(BidInformation o1, BidInformation o2) {
+            int compareValue = -o1.getMaximumBid().compareTo(o2.getMaximumBid()); //reverse sort
+            if (compareValue == 0) {
+                return o1.getBidderEntryNumber().compareTo(o2.getBidderEntryNumber());
+            }
+            return compareValue;
+        }
+    }
 }

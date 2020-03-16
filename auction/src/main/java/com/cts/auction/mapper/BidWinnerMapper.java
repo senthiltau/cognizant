@@ -27,7 +27,7 @@ public class BidWinnerMapper {
 
         for (BigDecimal index = result; index.compareTo(maximumBidOfSecondBidder) > 0; index.subtract(autoIncrementValue)) {
             result = result.subtract(autoIncrementValue);
-            if (result.compareTo(maximumBidOfSecondBidder) < 0) {
+            if (result.compareTo(maximumBidOfSecondBidder) == 0 || result.compareTo(maximumBidOfSecondBidder) < 0) {
                 break;
             }
         }

@@ -81,8 +81,8 @@ class AuctionServiceImplTest {
 
         bidInformationList.addAll(Arrays.asList(bidderLinda, bidderDave, bidderEric));
         BidWinnerDetails actual = auctionService.determineWinningBid(bidInformationList, "Record Player");
-        assertEquals(new BigDecimal("239"), actual.getWinningBid());
-        assertEquals(bidderLinda.getBidder().getBidderName(), actual.getBidder().getBidderName());
+        assertEquals(new BigDecimal("243"), actual.getWinningBid());
+        assertEquals(bidderDave.getBidder().getBidderName(), actual.getBidder().getBidderName());
     }
 
     @Test
@@ -107,7 +107,7 @@ class AuctionServiceImplTest {
 
         bidInformationList.addAll(Arrays.asList(bidderLinda, bidderDave, bidderEric));
         BidWinnerDetails actual = auctionService.determineWinningBid(bidInformationList, "Snow shoes");
-        assertEquals(new BigDecimal("70"), actual.getWinningBid());
+        assertEquals(new BigDecimal("72"), actual.getWinningBid());
         assertEquals(bidderEric.getBidder().getBidderName(), actual.getBidder().getBidderName());
     }
 
@@ -133,8 +133,8 @@ class AuctionServiceImplTest {
 
         bidInformationList.addAll(Arrays.asList(bidderLinda, bidderDave, bidderEric));
         BidWinnerDetails actual = auctionService.determineWinningBid(bidInformationList, "Piano");
-        assertEquals(new BigDecimal("62000"), actual.getWinningBid());
-        assertEquals(bidderLinda.getBidder().getBidderName(), actual.getBidder().getBidderName());
+        assertEquals(new BigDecimal("70000"), actual.getWinningBid());
+        assertEquals(bidderDave.getBidder().getBidderName(), actual.getBidder().getBidderName());
     }
 
     @Test

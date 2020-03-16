@@ -13,7 +13,7 @@ public final class BidInformation {
 
     private final BigDecimal autoIncrementAmount;
 
-    private final int bidderEntryNumber;
+    private final Integer bidderEntryNumber;
 
 
     private BidInformation(final Builder builder) {
@@ -40,7 +40,7 @@ public final class BidInformation {
         return autoIncrementAmount;
     }
 
-    public int getBidderEntryNumber() {
+    public Integer getBidderEntryNumber() {
         return bidderEntryNumber;
     }
 
@@ -85,7 +85,7 @@ public final class BidInformation {
 
         private BigDecimal autoIncrementAmount;
 
-        private int bidderEntryNumber;
+        private Integer bidderEntryNumber;
 
         public Builder() {
         }
@@ -118,7 +118,7 @@ public final class BidInformation {
             return this;
         }
 
-        public Builder bidderEntryNumber(final int bidderEntryNumber) {
+        public Builder bidderEntryNumber(final Integer bidderEntryNumber) {
             this.bidderEntryNumber = bidderEntryNumber;
             return this;
         }
